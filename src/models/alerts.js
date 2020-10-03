@@ -14,7 +14,15 @@ class Alertas extends Model {
       ocup_id: DataTypes.INTEGER,
       ConnOnSignal:DataTypes.VIRTUAL,
       vagas:DataTypes.INTEGER,
-
+      agendado:DataTypes.BOOLEAN,
+      dtFinal:DataTypes.DATE,
+      dtInicial:DataTypes.DATE,
+      hrFinal:DataTypes.DATE,
+      hrInicial:DataTypes.DATE,
+      imediato:DataTypes.BOOLEAN,
+      intervalo:DataTypes.BOOLEAN,
+      intervaloFin:DataTypes.DATE,
+      intervaloInit:DataTypes.DATE,
     }, {
       hooks: {
         afterCreate: async (alert) => {

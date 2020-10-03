@@ -8,12 +8,16 @@ const { Op } = require('sequelize');
 
 
 
+
 module.exports = {
 
     async Store(req, res) {
-        const { name, password, idade, sexo, cep, email, anunciante, possui_mei_ou_cnpj, telefone, nasc, id_profissao } = req.body
+        const usuario = req.body.user
+        const user = JSON.parse(usuario)
+        const { name, password, idade, sexo, cep, email, anunciante, possui_mei_ou_cnpj, telefone, nasc } = user.user
+        const id_profissao  = user.id_profissao
         
-
+       
         let response = User.findAll({
             where: {
                 email: email
@@ -48,6 +52,7 @@ module.exports = {
                     token: generateToken({ id: resolve.id })
                 })
             })
+            .catch(err =>{res.status(403).send({message:'Não foi possivel se cadastrar no momento, tente mais tarde'})})
         }
     },
 
@@ -157,10 +162,10 @@ module.exports = {
                     email
                 },
                 individualHooks: true
-            }).then(resolve => {
+            }).then(resolve => {                
                 resolve[0].password_hash = undefined
                 resolve[0].passwordpassword = undefined
-                res.status(200).send({ user: resolve[1].id })
+                res.status(200).send({message: 'Senha atualizada'})
             })
         })
 

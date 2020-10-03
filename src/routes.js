@@ -17,7 +17,7 @@ const UpdateBio = require('./controllers/profileController')
 
 const routes = express.Router() 
 
-routes.post('/users',UserController.Store )
+routes.post('/users',multer(multerConfig).single('file'),UserController.Store )
 routes.post('/users/login',Authenticate.singin)
 routes.put('/users/forgotPassword',userController.updatePass)
 routes.put('/users/bio',multer(multerConfig).single('file'),UpdateBio.updateBio)

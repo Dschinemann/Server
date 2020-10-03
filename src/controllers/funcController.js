@@ -9,7 +9,7 @@ const sequelize = require('sequelize')
 module.exports = {
     async index(req, res) {
         const op = sequelize.Op
-        const { search = '%' } = req.query
+        const { search, page=1 } = req.query
         
         try {
             const response = await Funcoes.findAll({
