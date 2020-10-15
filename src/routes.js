@@ -41,7 +41,7 @@ routes.get('/user/minhaFoto',UserController.FotoPerfil)
 routes.get('/ocupacao',Ocupacao.index)
 routes.post('/ocupacao/create',Ocupacao.Store)
 routes.get('/ocupacao/userOcup', Ocupacao.indexUserOcup)
-routes.put('/ocupacao/userUpdate', Ocupacao.userOcupUpdate)
+routes.post('/ocupacao/userUpdate', Ocupacao.userOcupUpdate)
 
 routes.post('/user/alert/feedback', FeedBack.Store)
 routes.post('/user/rating', FeedBack.Rating)

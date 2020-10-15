@@ -16,6 +16,7 @@ module.exports = {
         const user = JSON.parse(usuario)
         const { name, password, idade, sexo, cep, email, anunciante, possui_mei_ou_cnpj, telefone, nasc } = user.user
         const id_profissao  = user.id_profissao
+        const { originalname, key, location: url = '' } = req.file
         
        
         let response = User.findAll({
@@ -51,9 +52,20 @@ module.exports = {
                     resolve,
                     token: generateToken({ id: resolve.id })
                 })
+            })  
+            .catch(err =>{res.status(403).send({message:'Não foi possivel se cadastrar no momento, tente mais tarde'})
             })
-            .catch(err =>{res.status(403).send({message:'Não foi possivel se cadastrar no momento, tente mais tarde'})})
         }
+        User.afterCreate(user => {
+            return Upload.create({
+                user_id: user.id,
+                name: originalname,
+                key,
+                url,                
+            })
+            .then()
+            .catch(err => {return});
+        })
     },
 
 
@@ -141,7 +153,7 @@ module.exports = {
                 if (!resolve) {
                     return res.status(500).send({ message: "Erro interno do servidor" })
                 }
-                return res.status(200).send({ message: 'Foto atualizada' })
+                return res.status(200).send({ message: 'Foto atualizada', photo: url })
             })
         })
     },
@@ -168,6 +180,7 @@ module.exports = {
                 res.status(200).send({message: 'Senha atualizada'})
             })
         })
+        .catch(e => console.log(e))
 
 
     }

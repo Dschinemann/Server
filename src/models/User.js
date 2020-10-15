@@ -42,9 +42,8 @@ class User extends Model{
                     let array = user.id_profissao
                     
                     async function create(item, indice) {
-                      
-                        let response = await Ocupacao.findByPk(array[indice]).then(
-                            resolve => {
+                        let response = await Ocupacao.findByPk(array[indice].id).then(
+                            resolve => { 
                                 if(!resolve){
                                     return
                                 }else{

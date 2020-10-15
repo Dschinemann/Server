@@ -29,25 +29,15 @@ module.exports = {
         const user_id = req.headers.authorization
 
 
-        const response = await Ocupacao.findOne({
-            where: {
-                id: `${tipoDeProfissão}`
-            }
-        })
-
-        const tipo_de_profissão = response.titulo
-        const ocup_id = response.id
-
         try {
-
             const alert = await Alert.create({
                 titulo,
                 descricao,
                 valor,
                 local,
                 cep,
-                tipo_de_profissão,
-                ocup_id,
+                tipo_de_profissão: tipoDeProfissão.titulo,
+                ocup_id: tipoDeProfissão.id,
                 user_id,
                 status: 'ativo',
                 ConnOnSignal,
@@ -65,11 +55,8 @@ module.exports = {
 
             return res.status(200).send({ message: 'Alerta Criado com Sucesso!' })
         } catch (error) {
-
             console.log(error)
             return res.status(400).send({ error: 'falha no registro' })
-
-
         }
     },
 

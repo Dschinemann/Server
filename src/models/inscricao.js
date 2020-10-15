@@ -13,7 +13,8 @@ class Inscricao extends Model {
             avaliado: DataTypes.STRING,
             rating: DataTypes.FLOAT,
             valor: DataTypes.FLOAT,
-            aceite: DataTypes.STRING
+            aceite: DataTypes.STRING,
+            local: DataTypes.STRING,
 
         }, {
             hooks: {

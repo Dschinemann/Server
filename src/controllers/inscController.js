@@ -32,6 +32,7 @@ module.exports = {
                 return res.send('Alerta não encontrado!')
             }
             title = titulo.titulo
+            local = titulo.local
         })
 
 
@@ -59,11 +60,11 @@ module.exports = {
             if (!ocup) {
                 return res.send('Ops! Antes você precisa cadastrar sua profissão para continuar')
             }
-           tituloProfissao = ocup.ocup_id
+            tituloProfissao = ocup.ocup_id
         })
 
 
-        const alert = await Alerta.findOne({
+        const alert = Alerta.findOne({
             where: {
                 id: alert_id
             }
@@ -71,49 +72,40 @@ module.exports = {
             if (!alert) {
                 return res.send('Alerta não encontrado')
             }
-           tipoProfissao = alert.ocup_id
-           valor = alert.valor
+            const validation = Insc.findOne({
+                where: {
+                    user_id: user_id,
+                    alert_id: alert_id
+                }
+            }).then(async (validation) => {
+                if (!validation) {
+                    try {
+                        const insc = await Insc.create({
+                            titulo: title,
+                            valor: alert.valor,
+                            user_id,
+                            alert_id,
+                            url,
+                            name,
+                            telefone,
+                            email,
+                            selecao: 'false',
+                            avaliado: 'NAO',
+                            rating: userRating,
+                            local,
+                        })
+                        return res.status(200).send({message:'Inscrito com sucesso. Boa Sorte!'})
+                    } catch (error) {
+                        console.log(error)
+                        res.send('Tente novamente')
+                    }
+                }
+                return res.status(401).send({message:'Você ja esta Inscrito nesse Alerta'})
+            })
         })
-
-
-        try {
-            if (tipoProfissao == tituloProfissao) {
-                
-                const validation = await Insc.findOne({
-                    where: {
-                        user_id: user_id,
-                        alert_id: alert_id
-                    }
-                }).then(async (validation) => {
-                    if (!validation) {
-                        try {
-                            const insc = await Insc.create({
-                                titulo: title,
-                                valor,
-                                user_id,
-                                alert_id,
-                                url,
-                                name,
-                                telefone,
-                                email,
-                                selecao: 'false',
-                                avaliado: 'NAO',
-                                rating: userRating
-                            })
-                            res.send('Inscrito com sucesso. Boa Sorte!')
-                        } catch (error) {
-                            console.log(error)
-                            res.send('Tente novamente')
-                        }
-                    }
-                    return res.send('Você ja esta Inscrito nesse Alerta')
-                })
-            }else
-            res.send('A profissão que esta cadastrada, não é igual ao solicitado no alerta, provavelmente você acabou de atualizar sua profissão e o app ainda não foi atualizado, para resolver este problema reinicie o aplicativo!')
-        } catch (error) {
-            console.log(error)
-        }
-
+        .catch(() => {
+           res.status(400).send({message: 'Não foi possivel cadastra-lo para este alerta!'})      
+        })
     },
 
     async Index(req, res) { //todos os alertas que o user esta inscrito
@@ -121,7 +113,7 @@ module.exports = {
         const { page = 1 } = req.query
         const { count } = await Insc.findAndCountAll({
             where: {
-                user_id: user_id,             
+                user_id: user_id,
             }
         })
 
@@ -219,7 +211,7 @@ module.exports = {
 
 
         try {
-           
+
             const response = await Insc.update({ selecao: selecao, },
                 {
                     where: {
@@ -237,24 +229,24 @@ module.exports = {
 
     },
 
-    async Aceite(req, res){
+    async Aceite(req, res) {
         const user_id = req.headers.authorization
         const { id } = req.params
         const { aceite } = req.body
-        
+
         try {
-           
+
             const response = await Insc.update({ aceite },
                 {
                     where: {
                         user_id: user_id,
-                        alert_id: id                     
+                        alert_id: id
                     }
                 })
-            res.status(200).send({message:'Atualizado com sucesso'})
+            res.status(200).send({ message: 'Atualizado com sucesso' })
 
         } catch (error) {
-            res.status(400).send({message:'Não foi possivel atualizar o status no momento, tente mais tarde!'})
+            res.status(400).send({ message: 'Não foi possivel atualizar o status no momento, tente mais tarde!' })
             console.log(error)
         }
     }
