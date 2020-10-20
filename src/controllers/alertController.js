@@ -39,7 +39,7 @@ module.exports = {
                 tipo_de_profissão: tipoDeProfissão.titulo,
                 ocup_id: tipoDeProfissão.id,
                 user_id,
-                status: 'ativo',
+                status: 'Ativo',
                 ConnOnSignal,
                 vagas,
                 agendado,

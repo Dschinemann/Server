@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize')
-const userNotification = require('../Notifications/notifications')
+const userNotification = require('../Notifications/firebase')
+const UserOpcup = require('../models/UserOcup')
 
 class Inscricao extends Model {
     static init(sequelize) {
@@ -9,8 +10,8 @@ class Inscricao extends Model {
             url: DataTypes.STRING,
             telefone: DataTypes.STRING,
             email: DataTypes.STRING,
-            selecao: DataTypes.STRING,
-            avaliado: DataTypes.STRING,
+            selecao: DataTypes.BOOLEAN,
+            avaliado: DataTypes.BOOLEAN,
             rating: DataTypes.FLOAT,
             valor: DataTypes.FLOAT,
             aceite: DataTypes.STRING,
@@ -18,17 +19,13 @@ class Inscricao extends Model {
 
         }, {
             hooks: {
-               beforeUpdate: async (inscricao) => {
-                    
-                    let Message = {
-                        app_id: process.env.APP_ID,
-                        template_id: "80dd01ed-8f3e-4189-b855-a839bee1861f",
-                        contents: { "en": `Você foi selecionado para o alerta\n código:  ${inscricao.alert_id} titulo:  ${inscricao.titulo},\nverifique nos alertas que você esta inscrito e responda o anunciante o mais rápido possível! `},
-                        filters: [
-                            { "field": "tag", "key": "user_id", "relation": "=", "value": inscricao.user_id }                           
-                        ]
+                afterUpdate: async (inscricao) => {
+                    if(inscricao.selecao === true) {
+                        let response = await UserOpcup.findOne({where: {
+                            user_id: inscricao.user_id
+                        }})
+                        userNotification.sendNotificationSelectionsUser(response.tokenfirebase,inscricao.dataValues)
                     }
-                    userNotification.userNotification(Message)
                 }
             },
             sequelize,

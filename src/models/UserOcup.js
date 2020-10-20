@@ -4,7 +4,8 @@ class UserOcup extends Model{
     static init(sequelize){
         super.init({            
             name:DataTypes.STRING,
-            ocup_titulo:DataTypes.STRING,           
+            ocup_titulo:DataTypes.STRING,   
+            tokenfirebase:DataTypes.STRING,
             
         }, {
             sequelize,

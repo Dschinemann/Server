@@ -5,7 +5,6 @@ const User = require('../models/User')
 const sequelize = require('sequelize')
 
 
-
 module.exports = {
     async index(req, res) {
         const op = sequelize.Op
@@ -101,7 +100,7 @@ module.exports = {
         const { codigo } = req.body;
         let array = codigo;
         let professions = array.map(ele => ele.id);
-        let profession = []; 
+        let profession = [];
 
         const name = await User.findOne({
             where: {
@@ -121,17 +120,24 @@ module.exports = {
                     return
                 } else {
                     let { titulo } = resolve
-                    return UserOcup.create({ user_id, name: nome, ocup_id: professions[index], ocup_titulo: titulo }).then((response) => {                                            
-                        profession.push(response.dataValues);                
-                        if(profession.length == array.length) {                         
+                    return UserOcup.create({ user_id, name: nome, ocup_id: professions[index], ocup_titulo: titulo }).then((response) => {
+                        profession.push(response.dataValues);
+                        if (profession.length == array.length) {
                             return res.status(200).send({ message: 'Atualiazo com sucesso!', profession: profession })
                         }
                     })
-                    .catch(e => console.log(e));
+                        .catch(e => console.log(e));
                 }
             }).catch(err => {
                 return
             });
-        }                
+        }
+    },
+    tokenUpdate(req, res) {
+        const user_id = req.headers.authorization
+        const { token } = req.body
+        UserOcup.update({ tokenfirebase: token }, { where: { user_id } }).then().catch(()=>{
+            res.status(400).send({message: 'não foi possivel atualizar o token!'})
+        })
     }
 }

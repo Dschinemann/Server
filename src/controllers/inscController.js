@@ -89,8 +89,8 @@ module.exports = {
                             name,
                             telefone,
                             email,
-                            selecao: 'false',
-                            avaliado: 'NAO',
+                            selecao: false,
+                            avaliado: false,
                             rating: userRating,
                             local,
                         })
@@ -133,10 +133,10 @@ module.exports = {
         }
 
     },
-
+ 
     async indexUserAlert(req, res) {  // todos os inscritos por alerta
         const { alert_id } = req.params
-        const { page = 1, status = 'false', avaliado = 'NAO' } = req.query
+        const { page = 1, status = false, avaliado = false } = req.query
 
 
         const { count } = await Insc.findAndCountAll({

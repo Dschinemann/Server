@@ -1,10 +1,10 @@
-const express = require('express')
-const routes = require('./routes')
-const connection = require('./database/index')
-const cors = require('cors')
-const Message = require('../src/models/Message')
-const usersConnect = []
-
+const express = require('express');
+const routes = require('./routes');
+const connection = require('./database/index');
+const cors = require('cors');
+const Message = require('../src/models/Message');
+const usersConnect = [];
+const sendMessage = require('./Notifications/firebase');
 
 const app = express()
 const http = require('http').createServer(app)
@@ -50,7 +50,9 @@ app.use(cors())
 
 
 http.listen(process.env.SERVER_SOCKET)
-app.listen(process.env.SERVER_APP)
+app.listen(process.env.SERVER_APP, () => {
+    console.log('serveAtivo');
+});
     
 
 

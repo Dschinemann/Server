@@ -53,11 +53,11 @@ module.exports = {
       },
       selecao:{
         allowNull:false,
-        type:Sequelize.STRING
+        type:Sequelize.BOOLEAN
       },
       avaliado:{
         allowNull:false,
-        type:Sequelize.STRING
+        type:Sequelize.BOOLEAN
       },
       created_at: {
         allowNull: false,
